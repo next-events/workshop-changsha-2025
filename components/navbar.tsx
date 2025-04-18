@@ -1,0 +1,108 @@
+import {
+  Navbar as HeroUINavbar,
+  NavbarContent,
+  NavbarMenu,
+  NavbarMenuToggle,
+  NavbarBrand,
+  NavbarItem,
+  NavbarMenuItem,
+} from "@heroui/navbar";
+import { Button } from "@heroui/button";
+import { Link } from "@heroui/link";
+import { link as linkStyles } from "@heroui/theme";
+import NextLink from "next/link";
+import clsx from "clsx";
+import { useEffect, useState } from "react";
+
+import { siteConfig } from "@/config/site";
+import { ThemeSwitch } from "@/components/theme-switch";
+import { GithubIcon, Logo } from "@/components/icons";
+import { NavbarLink } from "./NavbarLink";
+import { useScrollSpy } from "@/hooks/useScrollSpy";
+
+export const Navbar = () => {
+  // 修改导航项，使其指向主页面的部分
+  const navItems = siteConfig.navItems.map(item => ({
+    ...item,
+    href: item.href === "/" ? "/" : `/#${item.href.replace("/", "")}`,
+    sectionId: item.href === "/" ? "intro" : item.href.replace("/", "")
+  }));
+  
+  // 获取所有部分的ID
+  const sectionIds = navItems.map(item => item.sectionId);
+  
+  // 使用滚动监听钩子来跟踪活动部分
+  const activeSection = useScrollSpy(sectionIds);
+  
+  // 处理客户端渲染
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return (
+    <HeroUINavbar maxWidth="xl" position="sticky" className="fixed backdrop-blur-md bg-background/70">
+      <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
+        <NavbarBrand className="gap-3 max-w-fit">
+          <NextLink className="flex justify-start items-center gap-1" href="/">
+            {/* <Logo /> */}
+            <p className="font-bold text-inherit">NExT 2025</p>
+          </NextLink>
+        </NavbarBrand>
+        <div className="hidden lg:flex gap-4 justify-start ml-2">
+          {navItems.map((item) => (
+            <NavbarItem key={item.href}>
+              <NavbarLink 
+                href={item.href}
+                isActive={mounted && activeSection === item.sectionId}
+              >
+                {item.label.toUpperCase()}
+              </NavbarLink>
+            </NavbarItem>
+          ))}
+        </div>
+      </NavbarContent>
+
+      <NavbarContent
+        className="hidden sm:flex basis-1/5 sm:basis-full"
+        justify="end"
+      >
+        <NavbarItem className="hidden sm:flex gap-2">
+          <ThemeSwitch />
+        </NavbarItem>
+        <NavbarItem className="hidden md:flex">
+          <Button
+            as={Link}
+            className="text-sm font-normal text-white bg-primary"
+            href="/#registration"
+            variant="flat"
+          >
+            Registration
+          </Button>
+        </NavbarItem>
+      </NavbarContent>
+
+      <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
+        <ThemeSwitch />
+        <NavbarMenuToggle />
+      </NavbarContent>
+
+      <NavbarMenu>
+        <div className="mx-4 mt-2 flex flex-col gap-2">
+          {navItems.map((item, index) => (
+            <NavbarMenuItem key={`${item}-${index}`}>
+              <Link
+                color={activeSection === item.sectionId ? "primary" : "foreground"}
+                href={item.href}
+                size="lg"
+                className={activeSection === item.sectionId ? "font-medium" : ""}
+              >
+                {item.label}
+              </Link>
+            </NavbarMenuItem>
+          ))}
+        </div>
+      </NavbarMenu>
+    </HeroUINavbar>
+  );
+};

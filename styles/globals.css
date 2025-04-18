@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-shadow-sm {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .text-shadow-md {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.5);
+  }
+  
+  .text-shadow-xl {
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
+  }
+  
+  /* 导航链接的平滑过渡 */
+  .navbar-link-transition {
+    transition: all 0.3s ease;
+  }
+  
+  /* 页面滚动的平滑过渡 */
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* 导航栏固定时的滚动偏移 */
+  .scroll-mt-navbar {
+    scroll-margin-top: 5rem;
+  }
+}
+
+/* 适应不同浏览器的滚动行为 */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
